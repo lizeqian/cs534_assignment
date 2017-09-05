@@ -12,7 +12,7 @@ class vacuum_world:
         self.score      =   0
 
     def sensor(self):
-        self.current_dirt   =   self.dirt[self.vacuum_y, self.vacuum_y]
+        self.current_dirt   =   self.dirt[self.vacuum_y, self.vacuum_x]
         return self.current_dirt, self.vacuum_x, self.vacuum_y
 
 
@@ -24,7 +24,6 @@ class vacuum_world:
         self.vacuum_y   =   vacuum_init_y
     
     def actuator(self, action): #action = "left", "right", "up", "down", "suck"
-
 
         if action=="left":
             self.vacuum_x-=1
@@ -38,7 +37,6 @@ class vacuum_world:
 
         if action=="suck":
             self.dirt[self.vacuum_y, self.vacuum_x]=0
-            print ("suck")
        
     def performance_evaluation(self):       #needs to be called very step
         self.score  += self.world_h*self.world_w-np.sum(self.dirt)
@@ -47,19 +45,20 @@ class vacuum_world:
 if __name__ == '__main__':
     world_height = 1
     world_width  = 2
-    dirtiness    = np.ones((1,2))
+    dirtiness    = np.array([[0,1]])
     vacuum_x     = 0
     vacuum_y     = 0
     lifetime     = 1000
-
 
     vacuum_env = vacuum_world()
 
     vacuum_env.environment_init(world_height, world_width, dirtiness, vacuum_x, vacuum_y)
 
     lifetime_cnt = 0
+    score = 0
 
     while lifetime_cnt < lifetime:
+        score = vacuum_env.performance_evaluation()
         cur_dirt, cur_x, cur_y = vacuum_env.sensor()
         if cur_dirt == 1:
             cur_action = "suck"
@@ -68,8 +67,7 @@ if __name__ == '__main__':
         else:
             cur_action = "left"
         
-        print (cur_action)
         vacuum_env.actuator(cur_action)
-        (vacuum_env.performance_evaluation())
 
         lifetime_cnt += 1
+
