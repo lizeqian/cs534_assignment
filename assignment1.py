@@ -2,8 +2,6 @@
 
 import numpy as np
 
-
-
 class vacuum_world:
     def __init__(self):
         self.world_h    =   8
